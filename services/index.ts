@@ -1,5 +1,6 @@
 import {
   IFormDana,
+  IFormDelete,
   IFormLogin,
   IFormPengeluaran,
   IFormRegister,
@@ -15,6 +16,12 @@ export const addPengeluaran = async (payload: IFormPengeluaran) => {
     pengeluaran: payload.pengluaran,
   };
   return await utils.HttpClient.put(`/api/cost-track`, newPayload);
+};
+
+export const deletePengeluaran = async (payload: IFormDelete) => {
+  return await utils.HttpClient.delete(
+    `/api/cost-track/delete-dana/${payload.id}`
+  );
 };
 
 export const updateDana = async (payload: IFormDana) => {

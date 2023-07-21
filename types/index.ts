@@ -8,9 +8,11 @@ export interface IListCost {
 }
 
 export interface IListPengeluaran {
+  id: string;
   desc: string;
   amount: number;
   date: Date;
+  colors: string;
 }
 
 export interface IApiResponsePengeluaran {
@@ -34,4 +36,8 @@ export interface IFormRegister {
   username: string;
   password: string;
   dana: number;
+}
+
+export interface IFormDelete {
+  id: string;
 }

@@ -3,6 +3,7 @@ import useAddPengeluaran from "./useAddPengeluaran";
 import useUpdateDana from "./useUpdateDana";
 import useLogin from "./useLogin";
 import useRegister from "./useRegister";
+import useDeletePengeluaran from "./useDeletePengeluaran";
 
 export {
   useGetCostList,
@@ -10,4 +11,5 @@ export {
   useUpdateDana,
   useLogin,
   useRegister,
+  useDeletePengeluaran,
 };

@@ -1,7 +1,11 @@
 "use client";
 
 import { LoginForm, Navbar, ModalWallet } from "@/components";
-import { useAddPengeluaran, useGetCostList } from "@/hooks";
+import {
+  useAddPengeluaran,
+  useDeletePengeluaran,
+  useGetCostList,
+} from "@/hooks";
 import { IListPengeluaran } from "@/types";
 import moment from "moment";
 import { NextPage } from "next";
@@ -11,8 +15,13 @@ import { NumericFormat } from "react-number-format";
 import "moment/locale/id";
 import { toast } from "react-toastify";
 
+import _ from "lodash";
+
+import { BsFillTrashFill } from "react-icons/bs";
+
 const Index: NextPage = () => {
   const mutation = useAddPengeluaran();
+  const mutationDeletePengeluaran = useDeletePengeluaran();
   const getCostList = useGetCostList();
   const { data, isLoading, refetch } = getCostList;
 
@@ -21,6 +30,7 @@ const Index: NextPage = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [localForm, setLocalForm] = useState<string>("");
   const [isLoadingBtn, setIsLoadingBtn] = useState<boolean>(false);
+  const [isLoadingBtnDelete, setIsLoadingBtnDelete] = useState<boolean>(false);
 
   const dana: number = data?.data?.dana ?? 0;
   const pengeluaran: number = data?.data?.pengeluaran?.reduce(
@@ -29,6 +39,20 @@ const Index: NextPage = () => {
     0
   )!;
   const total = dana - pengeluaran;
+
+  const pengeluaranPerHari = _(data?.data?.pengeluaran)
+    .filter(
+      (e: any) =>
+        moment(e.date).format("YYYY/MM/DD") == moment().format("YYYY/MM/DD")
+    )
+    .groupBy((v) => moment(v.date).format("YYYY/MM/DD"))
+    .map(function (items, filterDate) {
+      return {
+        date: filterDate,
+        price: _.sumBy(items, "amount"),
+      };
+    })
+    .value();
 
   useEffect(() => {
     const getLocalForm = localStorage.getItem("token");
@@ -43,12 +67,16 @@ const Index: NextPage = () => {
     const pengeluaranList: IListPengeluaran[] = data?.data?.pengeluaran?.map(
       (e: any) => e
     )!;
+    var colors = ["bg-red-400", "bg-blue-400", "bg-sky-400", "bg-lime-400"];
+    var random_color = colors[Math.floor(Math.random() * colors.length)];
     const tempPengeluaran = [
       ...pengeluaranList,
       {
+        id: new Date().getTime().toString(),
         desc,
         amount: Number(amount),
         date: new Date(),
+        colors: random_color,
       },
     ];
     try {
@@ -86,6 +114,38 @@ const Index: NextPage = () => {
     data?.data?.pengeluaran,
     desc,
   ]);
+
+  const onDeletePengeluaran = useCallback(
+    (id: string) => {
+      try {
+        setIsLoadingBtnDelete(true);
+        mutationDeletePengeluaran.mutate(
+          {
+            id,
+          },
+          {
+            onSuccess(data) {
+              if (data) {
+                refetch();
+                toast.success(data.data.message);
+                setDesc("");
+                setAmount("");
+                setIsLoadingBtnDelete(false);
+              }
+            },
+            onError(err: any) {
+              toast.error(err.response.data.message);
+              setIsLoadingBtnDelete(false);
+            },
+          }
+        );
+      } catch (error) {
+        console.log("err.submit", error);
+        setIsLoadingBtnDelete(false);
+      }
+    },
+    [mutationDeletePengeluaran, refetch]
+  );
 
   return (
     <>
@@ -143,6 +203,19 @@ const Index: NextPage = () => {
                       Submit
                     </button>
                   )}
+                  <div className="flex flex-wrap w-full gap-2 md:w-4/3 mt-7">
+                    {_.uniqBy(data?.data?.pengeluaran, "desc")
+                      ?.slice(0, 7)
+                      .map((e: IListPengeluaran, idx: number) => (
+                        <div
+                          className={`px-4 py-1 text-xs text-center text-white rounded-full cursor-pointer ${e.colors}`}
+                          key={idx}
+                          onClick={() => setDesc(e.desc)}
+                        >
+                          <p className="">{e.desc}</p>
+                        </div>
+                      ))}
+                  </div>
                 </div>
 
                 {/* SECTION RIGHT */}
@@ -197,6 +270,21 @@ const Index: NextPage = () => {
                         />
                       </div>
                     </div>
+                    <div className="px-2 py-2">
+                      <p className="text-xs italic">
+                        *Kamu sudah habis{" "}
+                        <span className="font-bold">
+                          <NumericFormat
+                            value={pengeluaranPerHari[0]?.price}
+                            prefix="Rp. "
+                            displayType="text"
+                            thousandSeparator="."
+                            decimalSeparator=","
+                          />
+                        </span>{" "}
+                        hari ini.
+                      </p>
+                    </div>
                   </div>
                   <div className="w-full md:w-2/3 mx-auto bg-[#F7F7F9] h-[200px] md:h-[450px] overflow-y-scroll border-b-2">
                     {data?.data?.pengeluaran?.map(
@@ -205,7 +293,23 @@ const Index: NextPage = () => {
                           className="px-2 py-4 mt-5 bg-white shadow-md"
                           key={idx}
                         >
-                          <h1 className="mb-2 text-sm">{e.desc}</h1>
+                          <div className="flex flex-row items-center justify-between mb-2">
+                            <div className="">
+                              <h1 className="text-sm">{e.desc}</h1>
+                            </div>
+                            <div className="flex flex-row items-center">
+                              <div
+                                className="p-1 rounded-md cursor-pointer bg-rose-500"
+                                onClick={() => onDeletePengeluaran(e.id)}
+                              >
+                                {isLoadingBtnDelete ? (
+                                  <div className="w-3 h-3 border-[2px] rounded-full border-white loader"></div>
+                                ) : (
+                                  <BsFillTrashFill className="text-xs text-white" />
+                                )}
+                              </div>
+                            </div>
+                          </div>
                           <hr />
                           <div className="flex items-center justify-between py-1">
                             <div className="flex gap-3">
