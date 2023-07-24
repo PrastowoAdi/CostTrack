@@ -1,4 +1,6 @@
 import { useRegister, useUpdateDana } from "@/hooks";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
 import { NumericFormat } from "react-number-format";
 import { toast } from "react-toastify";
@@ -9,6 +11,7 @@ interface IProps {
   isLogin: boolean;
 }
 function ModalWallet(props: IProps) {
+  const router = useRouter();
   const { setModalOpen, refetch, isLogin } = props;
   const mutation = useUpdateDana();
   const mutationRegister = useRegister();
@@ -81,7 +84,7 @@ function ModalWallet(props: IProps) {
 
   return (
     <div className="absolute top-0 flex items-center justify-center w-full h-screen bg-black/70">
-      <div className="w-4/5 p-5 bg-white rounded-md md:w-1/4">
+      <div className="w-4/5 p-5 bg-white rounded-md lg:w-1/4">
         {isLogin ? null : (
           <>
             <div className="mb-3 text-gray-700">
@@ -145,6 +148,27 @@ function ModalWallet(props: IProps) {
             </>
           )}
         </div>
+        {isLogin ? (
+          <>
+            {router.pathname === "/report" ? (
+              <div className="mt-10">
+                <Link href={"/"}>
+                  <h1 className="text-xs italic underline cursor-pointer">
+                    back to home
+                  </h1>
+                </Link>
+              </div>
+            ) : (
+              <div className="mt-10">
+                <Link href={"/report"}>
+                  <h1 className="text-xs italic underline cursor-pointer">
+                    See Report
+                  </h1>
+                </Link>
+              </div>
+            )}
+          </>
+        ) : null}
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ function LoginForm() {
           onSuccess(data) {
             if (data) {
               localStorage.setItem("token", JSON.stringify(data.data.token));
-              router.reload();
+              router.replace("/");
               setIsLoadingBtn(false);
             }
           },

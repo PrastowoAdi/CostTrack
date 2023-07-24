@@ -45,7 +45,7 @@ function Navbar(props: IProps) {
             className="p-1 text-2xl bg-[#CDDFEE] rounded-md cursor-pointer hover:bg-[#CDDFEE]/80 text-[#F7F7F9]"
             onClick={() => {
               localStorage.removeItem("token");
-              router.reload();
+              router.replace("/login");
             }}
           >
             <BiLogOutCircle />

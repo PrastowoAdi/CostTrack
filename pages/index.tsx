@@ -1,6 +1,6 @@
 "use client";
 
-import { LoginForm, Navbar, ModalWallet } from "@/components";
+import { Navbar, ModalWallet } from "@/components";
 import {
   useAddPengeluaran,
   useDeletePengeluaran,
@@ -147,6 +147,12 @@ const Index: NextPage = () => {
     [mutationDeletePengeluaran, refetch]
   );
 
+  if (localForm === "") {
+    return (
+      <div className="w-8 h-8 border-[6px] rounded-full border-[#dbdad9] loader"></div>
+    );
+  }
+
   return (
     <>
       <Head>
@@ -160,189 +166,185 @@ const Index: NextPage = () => {
           title={localForm === "" ? "Register" : "My"}
           isLogin={localForm === "" ? false : true}
         />
-        {localForm === "" ? (
-          <LoginForm />
-        ) : (
-          <div className="flex flex-col items-center justify-center w-5/6 mx-auto mt-7 md:mt-10 md:flex-row md: md:p-5">
-            {isLoading ? (
-              <div className="w-8 h-8 border-[6px] rounded-full border-[#dbdad9] loader"></div>
-            ) : (
-              <>
-                {/* SECTION LEFT */}
-                <div className="w-full mb-5 md:w-1/3">
-                  <div className="mb-3 text-gray-700">
-                    <label className="block mb-1 text-sm">Description</label>
-                    <input
-                      className="w-full h-10 px-3 text-sm placeholder-gray-600 border rounded-lg focus:shadow-outline "
-                      type="text"
-                      placeholder="Description"
-                      value={desc}
-                      onChange={(e) => setDesc(e.target.value)}
-                    />
-                  </div>
-                  <div className="text-gray-700 mb-7">
-                    <label className="block mb-1 text-sm">Amount</label>
-                    <NumericFormat
-                      type="text"
-                      className="w-full h-10 px-3 text-sm placeholder-gray-600 border rounded-lg focus:shadow-outline"
-                      placeholder="Amount"
-                      value={amount}
-                      thousandsGroupStyle="thousand"
-                      thousandSeparator=","
-                      prefix={"Rp. "}
-                      onValueChange={(e) => setAmount(e.value)}
-                    />
-                  </div>
-                  {isLoadingBtn ? (
-                    <div className="w-8 h-8 border-[6px] rounded-full border-[#dbdad9] loader"></div>
-                  ) : (
-                    <button
-                      className="px-6 py-2 font-semibold text-slate-950 bg-[#F7F7F9] rounded hover:bg-[#CDDFEE]/80 text-sm"
-                      onClick={onSubmit}
-                    >
-                      Submit
-                    </button>
-                  )}
-                  <div className="flex flex-wrap w-full gap-2 md:w-4/3 mt-7">
-                    {_.uniqBy(data?.data?.pengeluaran, "desc")
-                      ?.slice(0, 7)
-                      .map((e: IListPengeluaran, idx: number) => (
-                        <div
-                          className={`px-4 py-1 text-xs text-center text-white rounded-full cursor-pointer ${e.colors}`}
-                          key={idx}
-                          onClick={() => setDesc(e.desc)}
-                        >
-                          <p className="">{e.desc}</p>
-                        </div>
-                      ))}
-                  </div>
+        <div className="flex flex-col items-center justify-center w-5/6 mx-auto mt-7 md:mt-10 lg:flex-row md:p-5">
+          {isLoading ? (
+            <div className="w-8 h-8 border-[6px] rounded-full border-[#dbdad9] loader"></div>
+          ) : (
+            <>
+              {/* SECTION LEFT */}
+              <div className="w-full mb-5 lg:w-1/3">
+                <div className="mb-3 text-gray-700">
+                  <label className="block mb-1 text-sm">Description</label>
+                  <input
+                    className="w-full h-10 px-3 text-sm placeholder-gray-600 border rounded-lg focus:shadow-outline "
+                    type="text"
+                    placeholder="Description"
+                    value={desc}
+                    onChange={(e) => setDesc(e.target.value)}
+                  />
                 </div>
+                <div className="text-gray-700 mb-7">
+                  <label className="block mb-1 text-sm">Amount</label>
+                  <NumericFormat
+                    type="text"
+                    className="w-full h-10 px-3 text-sm placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                    placeholder="Amount"
+                    value={amount}
+                    thousandsGroupStyle="thousand"
+                    thousandSeparator=","
+                    prefix={"Rp. "}
+                    onValueChange={(e) => setAmount(e.value)}
+                  />
+                </div>
+                {isLoadingBtn ? (
+                  <div className="w-8 h-8 border-[6px] rounded-full border-[#dbdad9] loader"></div>
+                ) : (
+                  <button
+                    className="px-6 py-2 font-semibold text-slate-950 bg-[#F7F7F9] rounded hover:bg-[#CDDFEE]/80 text-sm"
+                    onClick={onSubmit}
+                  >
+                    Submit
+                  </button>
+                )}
+                <div className="flex flex-wrap w-full gap-2 lg:w-4/3 mt-7">
+                  {_.uniqBy(data?.data?.pengeluaran, "desc")
+                    ?.slice(0, 7)
+                    .map((e: IListPengeluaran, idx: number) => (
+                      <div
+                        className={`px-4 py-1 text-xs text-center text-white rounded-full cursor-pointer ${e.colors}`}
+                        key={idx}
+                        onClick={() => setDesc(e.desc)}
+                      >
+                        <p className="">{e.desc}</p>
+                      </div>
+                    ))}
+                </div>
+              </div>
 
-                {/* SECTION RIGHT */}
-                <div className="w-full md:flex-1">
-                  <div className="w-full mx-auto bg-white shadow-md md:w-2/3">
-                    <div className="flex justify-between px-2 py-1 border-t-2">
-                      <div className="">
-                        <h1 className="text-sm">Dana</h1>
-                      </div>
-                      <div className="">
-                        <NumericFormat
-                          className="text-sm text-blue-500"
-                          value={dana}
-                          prefix="Rp. "
-                          displayType="text"
-                          thousandSeparator="."
-                          decimalSeparator=","
-                        />
-                      </div>
+              {/* SECTION RIGHT */}
+              <div className="w-full lg:flex-1">
+                <div className="w-full mx-auto bg-white shadow-md lg:w-2/3">
+                  <div className="flex justify-between px-2 py-1 border-t-2">
+                    <div className="">
+                      <h1 className="text-sm">Dana</h1>
                     </div>
-                    <div className="flex justify-between px-2 py-1">
-                      <div className="">
-                        <h1 className="text-sm">Pengeluaran</h1>
-                      </div>
-                      <div className="">
-                        <NumericFormat
-                          className="text-sm text-rose-500"
-                          value={data?.data?.pengeluaran?.reduce(
-                            (total: number, currentValue: IListPengeluaran) =>
-                              (total = total + currentValue?.amount),
-                            0
-                          )}
-                          prefix="Rp. "
-                          displayType="text"
-                          thousandSeparator="."
-                          decimalSeparator=","
-                        />
-                      </div>
-                    </div>
-                    <div className="flex justify-between px-2 py-2">
-                      <div className="">
-                        <h1 className="text-sm font-semibold">Total</h1>
-                      </div>
-                      <div className="">
-                        <NumericFormat
-                          className="text-sm"
-                          value={total}
-                          prefix="Rp. "
-                          displayType="text"
-                          thousandSeparator="."
-                          decimalSeparator=","
-                        />
-                      </div>
-                    </div>
-                    <div className="px-2 py-2">
-                      <p className="text-xs italic">
-                        *Kamu sudah habis{" "}
-                        <span className="font-bold">
-                          <NumericFormat
-                            value={pengeluaranPerHari[0]?.price}
-                            prefix="Rp. "
-                            displayType="text"
-                            thousandSeparator="."
-                            decimalSeparator=","
-                          />
-                        </span>{" "}
-                        hari ini.
-                      </p>
+                    <div className="">
+                      <NumericFormat
+                        className="text-sm text-blue-500"
+                        value={dana}
+                        prefix="Rp. "
+                        displayType="text"
+                        thousandSeparator="."
+                        decimalSeparator=","
+                      />
                     </div>
                   </div>
-                  <div className="w-full md:w-2/3 mx-auto bg-[#F7F7F9] h-[200px] md:h-[450px] overflow-y-scroll border-b-2">
-                    {data?.data?.pengeluaran?.map(
-                      (e: IListPengeluaran, idx: number) => (
-                        <div
-                          className="px-2 py-4 mt-5 bg-white shadow-md"
-                          key={idx}
-                        >
-                          <div className="flex flex-row items-center justify-between mb-2">
-                            <div className="">
-                              <h1 className="text-sm">{e.desc}</h1>
-                            </div>
-                            <div className="flex flex-row items-center">
-                              <div
-                                className="p-1 rounded-md cursor-pointer bg-rose-500"
-                                onClick={() => onDeletePengeluaran(e.id)}
-                              >
-                                {isLoadingBtnDelete ? (
-                                  <div className="w-3 h-3 border-[2px] rounded-full border-white loader"></div>
-                                ) : (
-                                  <BsFillTrashFill className="text-xs text-white" />
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                          <hr />
-                          <div className="flex items-center justify-between py-1">
-                            <div className="flex gap-3">
-                              <h1 className="text-3xl font-light tracking-widest">
-                                {moment(e.date).format("DD")}
-                              </h1>
-                              <h2 className="text-xs font-light">
-                                {moment(e.date).format("dddd, MMMM YYYY")}
-                              </h2>
-                            </div>
-                            <div className="text-rose-500">
-                              <NumericFormat
-                                className="text-sm"
-                                value={e.amount}
-                                prefix="Rp. "
-                                displayType="text"
-                                thousandSeparator="."
-                                decimalSeparator=","
-                              />
-                            </div>
-                          </div>
-                          <p className="text-xs italic text-gray-400">
-                            {moment(e.date).fromNow()}
-                          </p>
-                        </div>
-                      )
-                    )}
+                  <div className="flex justify-between px-2 py-1">
+                    <div className="">
+                      <h1 className="text-sm">Pengeluaran</h1>
+                    </div>
+                    <div className="">
+                      <NumericFormat
+                        className="text-sm text-rose-500"
+                        value={data?.data?.pengeluaran?.reduce(
+                          (total: number, currentValue: IListPengeluaran) =>
+                            (total = total + currentValue?.amount),
+                          0
+                        )}
+                        prefix="Rp. "
+                        displayType="text"
+                        thousandSeparator="."
+                        decimalSeparator=","
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-between px-2 py-2">
+                    <div className="">
+                      <h1 className="text-sm font-semibold">Total</h1>
+                    </div>
+                    <div className="">
+                      <NumericFormat
+                        className="text-sm"
+                        value={total}
+                        prefix="Rp. "
+                        displayType="text"
+                        thousandSeparator="."
+                        decimalSeparator=","
+                      />
+                    </div>
+                  </div>
+                  <div className="px-2 py-2">
+                    <p className="text-xs italic">
+                      *Kamu sudah habis{" "}
+                      <span className="font-bold">
+                        <NumericFormat
+                          value={pengeluaranPerHari[0]?.price}
+                          prefix="Rp. "
+                          displayType="text"
+                          thousandSeparator="."
+                          decimalSeparator=","
+                        />
+                      </span>{" "}
+                      hari ini.
+                    </p>
                   </div>
                 </div>
-              </>
-            )}
-          </div>
-        )}
+                <div className="w-full lg:w-2/3 mx-auto bg-[#F7F7F9] h-[200px] lg:h-[450px] overflow-y-scroll border-b-2">
+                  {data?.data?.pengeluaran?.map(
+                    (e: IListPengeluaran, idx: number) => (
+                      <div
+                        className="px-2 py-4 mt-5 bg-white shadow-md"
+                        key={idx}
+                      >
+                        <div className="flex flex-row items-center justify-between mb-2">
+                          <div className="">
+                            <h1 className="text-sm">{e.desc}</h1>
+                          </div>
+                          <div className="flex flex-row items-center">
+                            <div
+                              className="p-1 rounded-md cursor-pointer bg-rose-500"
+                              onClick={() => onDeletePengeluaran(e.id)}
+                            >
+                              {isLoadingBtnDelete ? (
+                                <div className="w-3 h-3 border-[2px] rounded-full border-white loader"></div>
+                              ) : (
+                                <BsFillTrashFill className="text-xs text-white" />
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <hr />
+                        <div className="flex items-center justify-between py-1">
+                          <div className="flex gap-3">
+                            <h1 className="text-3xl font-light tracking-widest">
+                              {moment(e.date).format("DD")}
+                            </h1>
+                            <h2 className="text-xs font-light">
+                              {moment(e.date).format("dddd, MMMM YYYY")}
+                            </h2>
+                          </div>
+                          <div className="text-rose-500">
+                            <NumericFormat
+                              className="text-sm"
+                              value={e.amount}
+                              prefix="Rp. "
+                              displayType="text"
+                              thousandSeparator="."
+                              decimalSeparator=","
+                            />
+                          </div>
+                        </div>
+                        <p className="text-xs italic text-gray-400">
+                          {moment(e.date).fromNow()}
+                        </p>
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
         {modalOpen ? (
           <ModalWallet
             setModalOpen={() => setModalOpen(!modalOpen)}
