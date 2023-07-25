@@ -18,8 +18,10 @@ import { toast } from "react-toastify";
 import _ from "lodash";
 
 import { BsFillTrashFill } from "react-icons/bs";
+import { useRouter } from "next/router";
 
 const Index: NextPage = () => {
+  const router = useRouter();
   const mutation = useAddPengeluaran();
   const mutationDeletePengeluaran = useDeletePengeluaran();
   const getCostList = useGetCostList();
@@ -59,9 +61,9 @@ const Index: NextPage = () => {
     if (getLocalForm !== null) {
       setLocalForm(JSON.parse(getLocalForm!));
     } else {
-      setLocalForm("");
+      router.replace("/login");
     }
-  }, []);
+  }, [router]);
 
   const onSubmit = useCallback(() => {
     const pengeluaranList: IListPengeluaran[] = data?.data?.pengeluaran?.map(
