@@ -9,10 +9,11 @@ interface IProps {
   setModalOpen: () => void;
   refetch: () => void;
   isLogin: boolean;
+  dana: number;
 }
 function ModalWallet(props: IProps) {
   const router = useRouter();
-  const { setModalOpen, refetch, isLogin } = props;
+  const { setModalOpen, refetch, isLogin, dana } = props;
   const mutation = useUpdateDana();
   const mutationRegister = useRegister();
 
@@ -26,7 +27,7 @@ function ModalWallet(props: IProps) {
       setIsLoadingBtn(true);
       mutation.mutate(
         {
-          dana: Number(amount),
+          dana: Number(amount) + dana,
         },
         {
           onSuccess(data) {
@@ -48,7 +49,7 @@ function ModalWallet(props: IProps) {
       setIsLoadingBtn(false);
       console.log("err.submit", error);
     }
-  }, [mutation, setAmount, setModalOpen, refetch, amount]);
+  }, [mutation, setAmount, setModalOpen, refetch, amount, dana]);
 
   const onRegisterSubmit = useCallback(() => {
     try {

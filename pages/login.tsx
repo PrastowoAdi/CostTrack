@@ -21,6 +21,7 @@ const Index: NextPage = () => {
           dana={0}
           title={localForm === "" ? "Register" : "My"}
           isLogin={localForm === "" ? false : true}
+          setShowDana={() => {}}
         />
         <LoginForm />
         {modalOpen ? (
@@ -28,6 +29,7 @@ const Index: NextPage = () => {
             setModalOpen={() => setModalOpen(!modalOpen)}
             refetch={() => {}}
             isLogin={localForm === "" ? false : true}
+            dana={0}
           />
         ) : null}
       </div>

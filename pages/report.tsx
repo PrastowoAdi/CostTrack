@@ -61,6 +61,7 @@ const Index: NextPage = () => {
           dana={total}
           title={localForm === "" ? "Register" : "My"}
           isLogin={localForm === "" ? false : true}
+          setShowDana={() => {}}
         />
 
         <div className="flex flex-col items-center justify-center w-5/6 mx-auto mt-7 md:mt-10 md:flex-row md: md:p-5">
@@ -106,6 +107,7 @@ const Index: NextPage = () => {
             setModalOpen={() => setModalOpen(!modalOpen)}
             refetch={() => refetch()}
             isLogin={localForm === "" ? false : true}
+            dana={total}
           />
         ) : null}
       </div>

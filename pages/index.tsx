@@ -33,6 +33,7 @@ const Index: NextPage = () => {
   const [localForm, setLocalForm] = useState<string>("");
   const [isLoadingBtn, setIsLoadingBtn] = useState<boolean>(false);
   const [isLoadingBtnDelete, setIsLoadingBtnDelete] = useState<boolean>(false);
+  const [showDana, setShowDana] = useState<boolean>(false);
 
   const dana: number = data?.data?.dana ?? 0;
   const pengeluaran: number = data?.data?.pengeluaran?.reduce(
@@ -167,6 +168,7 @@ const Index: NextPage = () => {
           dana={total}
           title={localForm === "" ? "Register" : "My"}
           isLogin={localForm === "" ? false : true}
+          setShowDana={(val: boolean) => setShowDana(val)}
         />
         <div className="flex flex-col items-center justify-center w-5/6 mx-auto mt-7 md:mt-10 lg:flex-row md:p-5">
           {isLoading ? (
@@ -231,14 +233,20 @@ const Index: NextPage = () => {
                       <h1 className="text-sm">Dana</h1>
                     </div>
                     <div className="">
-                      <NumericFormat
-                        className="text-sm text-blue-500"
-                        value={dana}
-                        prefix="Rp. "
-                        displayType="text"
-                        thousandSeparator="."
-                        decimalSeparator=","
-                      />
+                      {showDana ? (
+                        <NumericFormat
+                          className="text-sm text-blue-500"
+                          value={dana}
+                          prefix="Rp. "
+                          displayType="text"
+                          thousandSeparator="."
+                          decimalSeparator=","
+                        />
+                      ) : (
+                        <h2 className="mt-1 text-sm font-bold tracking-widest text-gray-500">
+                          *******
+                        </h2>
+                      )}
                     </div>
                   </div>
                   <div className="flex justify-between px-2 py-1">
@@ -352,6 +360,7 @@ const Index: NextPage = () => {
             setModalOpen={() => setModalOpen(!modalOpen)}
             refetch={() => refetch()}
             isLogin={localForm === "" ? false : true}
+            dana={total}
           />
         ) : null}
       </div>
